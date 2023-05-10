@@ -14,3 +14,14 @@ exports.postMessage = (req, res, next) => {
     .then(result => res.status(200).json({ messageCreated: true }))
     .catch(error => res.status(500).json({ messageCreated: false }))
 }
+
+exports.fetchAllMessages = async (req, res, next) => {
+    let messages
+    const prevMessages = await req.user.getMessages( { attributes: ['message'] } );
+    if(prevMessages && prevMessages.length > 0) { 
+        messages = prevMessages.map((messageObj) => messageObj.message) 
+        res.status(200).json(messages)
+    } else {
+        res.sendStatus(204);
+    };
+}

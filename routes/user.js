@@ -18,4 +18,6 @@ router.get('/chat', auth.authenticate ,chatController.getChatApp);
 
 router.post('/chat', auth.authenticate, chatController.postMessage)
 
+router.get('/messages', auth.authenticate, chatController.fetchAllMessages);
+
 module.exports = router;
