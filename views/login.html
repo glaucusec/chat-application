@@ -47,7 +47,10 @@
           headers: {
             'Content-Type': 'application/json'
           }
-        }).then(res => alert(res.data.message))
+        }).then(res => {
+            alert(res.data.message);
+            document.location = 'chat'
+        })
         .catch(err => alert(err.response.data.error));
       })
     </script>

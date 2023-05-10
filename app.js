@@ -8,7 +8,7 @@ const cors = require('cors')
 const sequelize = require('./util/database');
 
 // routes
-const userRoutes = require('./routes/user');
+const routes = require('./routes/user');
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use(cors( { origin: '*' } ))
 
 app.use(bodyParser.json());
 
-app.use('/user', userRoutes);
+app.use('/', routes);
 
 sequelize.sync()
 .then(result => {
