@@ -6,7 +6,6 @@ const rootDir = require('../util/path')
 
 const User = require('../models/user');
 
-
 exports.getSignUpPage = (req, res, next) => {
     console.log(__dirname);
     res.sendFile(path.join(rootDir, 'views', 'signup.html'))
@@ -36,6 +35,12 @@ exports.postSignUpForm = async (req, res, next) => {
         console.log('%user.js controller%--->', error);
         res.status(500).json({ error: 'Internal Sever Error' })
     }
-    
-     
+}
+
+exports.getLoginPage = (req, res, next) => {
+    res.sendFile(path.join(rootDir, 'views', 'login.html'));
+}
+
+exports.postLoginData = (req, res, next) => {
+    console.log(req.body);
 }
