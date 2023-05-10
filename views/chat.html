@@ -50,10 +50,14 @@
       }
     })
 
-    document.addEventListener('DOMContentLoaded', async () => {
+
+    async function fetchOldMessages() {
+      let prevMessagesHolder = []
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, '$1');
       const prevMessages = await axios.get('/messages', { headers: { 'Content-Type' : 'application/json', 'Cookie': token } })
-      if(prevMessages.status === 200 && prevMessages.data.length > 0) {
+      if(prevMessages !== prevMessagesHolder) {
+        messages.innerHTML = '';
+        if(prevMessages.status === 200 && prevMessages.data.length > 0) {
         prevMessages.data.forEach(msg => {
           let item = document.createElement('li');
           item.textContent = msg
@@ -61,6 +65,10 @@
           window.scrollTo(0, document.body.scrollHeight);
         })
       };
-    });
+      }
+    };
+
+    setInterval(fetchOldMessages, 1000);
+
   </script>
 </html>
