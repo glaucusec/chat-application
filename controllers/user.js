@@ -58,7 +58,9 @@ exports.postLoginData = async (req, res, next) => {
         if(!userExists) { return res.status(404).json({ error: "User not found" })}
         const passwordsMatch = await bcrypt.compare(password, userExists.password);
         if(passwordsMatch) { 
-            res.status(200).json( { message: 'User login Successful', success: true, token: generateAccessToken(userExists.id, userExists.name) })
+            const token = generateAccessToken(userExists.id, userExists.name)
+            res.cookie('token',token);
+            res.status(200).json( { message: 'User login Successful', success: true, token: token })
         } else {
             res.status(401).json( { error: 'Incorrect Password; User not Authorized' });
         }
