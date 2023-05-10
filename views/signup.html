@@ -50,7 +50,7 @@
           headers: {
             'Content-Type': 'application/json'
           }
-        }).then(res => console.log(res))
+        }).then(res => alert(res.data.message))
         .catch(err => alert(err.response.data.error));
       })
     </script>

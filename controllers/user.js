@@ -29,7 +29,8 @@ exports.postSignUpForm = async (req, res, next) => {
         const saltrounds = 10;
         const encryptedPassword = await bcrypt.hash(password, saltrounds);
         const userCreated = await User.create( { name: name, email: email, phone: phone, password: encryptedPassword })
-        res.status(200).json( { message: "User created Successfully" })
+        console.log('User created successfully')
+        res.status(200).json( { message: "User created successfully" })
 
     } catch (error) {
         console.log('%user.js controller%--->', error);
