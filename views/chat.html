@@ -31,9 +31,20 @@
 
   </body>
   <script>
+    
     let messages = document.querySelector('#messages');
     let form = document.querySelector('form');
     let input = document.querySelector('#input');
+
+    function showMessages() {
+      const storedMessages = localStorage.getItem('messages');
+      JSON.parse(storedMessages).reverse().forEach(msg => {
+        let item = document.createElement('li');
+          item.textContent = msg.message
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+      });
+    }
     
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -50,25 +61,30 @@
       }
     })
 
-
-    async function fetchOldMessages() {
-      let prevMessagesHolder = []
+    document.addEventListener('DOMContentLoaded', async () => {
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, '$1');
-      const prevMessages = await axios.get('/messages', { headers: { 'Content-Type' : 'application/json', 'Cookie': token } })
-      if(prevMessages !== prevMessagesHolder) {
-        messages.innerHTML = '';
-        if(prevMessages.status === 200 && prevMessages.data.length > 0) {
-        prevMessages.data.forEach(msg => {
-          let item = document.createElement('li');
-          item.textContent = msg
-          messages.appendChild(item);
-          window.scrollTo(0, document.body.scrollHeight);
-        })
-      };
+
+      const messages = localStorage.getItem('messages');
+      if(!messages) {
+        const prevMessages = await axios.get('/messages',{ headers: { 'Content-Type' : 'application/json', 'Cookie': token }})
+        localStorage.setItem('messages', JSON.stringify(prevMessages.data));
+        showMessages();
+      } else {
+        const currMessages = JSON.parse(localStorage.getItem('messages'))
+        currlastMessageId = currMessages[0].id;
+        const prevMessages = await axios.get('/messages',{ params: { lastIndex: currlastMessageId }, headers: { 'Content-Type' : 'application/json', 'Cookie': token }})
+        newMessages = prevMessages.data.concat(currMessages).slice(0,10); 
+        localStorage.setItem('messages', JSON.stringify(newMessages))
+        showMessages();
       }
-    };
 
-    setInterval(fetchOldMessages, 1000);
-
+        // prevMessages.data.forEach(msg => {
+        //   let item = document.createElement('li');
+        //   item.textContent = msg
+        //   messages.appendChild(item);
+        //   window.scrollTo(0, document.body.scrollHeight);
+        // })
+      
+    });
   </script>
 </html>
