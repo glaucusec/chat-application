@@ -14,6 +14,8 @@ const routes = require('./routes/user');
 // models
 const User = require('./models/user');
 const Message = require('./models/message');
+const Group = require('./models/group');
+const User_Group = require('./models/usergroup');
 
 const app = express();
 
@@ -25,10 +27,16 @@ app.use(cookieParser());
 
 app.use('/', routes);
 
-User.hasMany(Message);
-Message.belongsTo(User);
+User.belongsToMany(Group, { through: 'User_Group', timestamps: false} );
+Group.belongsToMany(User, { through: 'User_Group' });
 
-sequelize.sync()
+Group.hasMany(Message);
+Message.belongsTo(Group);
+
+
+sequelize
+// .sync({force:true})
+.sync()
 .then(result => {
     app.listen(3000);
 })

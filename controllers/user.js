@@ -13,7 +13,6 @@ function generateAccessToken(id, name) {
 }
 
 exports.getSignUpPage = (req, res, next) => {
-    console.log(__dirname);
     res.sendFile(path.join(rootDir, 'views', 'signup.html'))
 }
 

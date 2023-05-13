@@ -16,8 +16,14 @@ router.post('/login', userController.postLoginData);
 
 router.get('/chat', auth.authenticate ,chatController.getChatApp);
 
-router.post('/chat', auth.authenticate, chatController.postMessage)
+router.post('/messages', auth.authenticate, chatController.fetchAllMessages);
 
-router.get('/messages', auth.authenticate, chatController.fetchAllMessages);
+router.post('/creategroup', auth.authenticate, chatController.createNewGroup)
+
+router.post('/groups', auth.authenticate, chatController.fetchGroups);
+
+router.post('/addmessage', auth.authenticate, chatController.createNewMessage);
+
+router.post('/addusertogroup', auth.authenticate, chatController.addUserToGroup);
 
 module.exports = router;
