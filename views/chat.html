@@ -2,145 +2,7 @@
 <html>
 <head>
   <title>Group Chat Application</title>
-  <style>
-    /* CSS styling for the layout */
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-    }
-    
-    .container {
-      display: flex;
-      width: 800px;
-      height: 500px;
-      border: 1px solid #ccc;
-      background-color: #fff;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .groups {
-      flex-basis: 30%;
-      padding: 20px;
-      border-right: 1px solid #ccc;
-      overflow: auto
-    }
-    
-    .messages {
-      flex-basis: 70%;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    
-    .group-item {
-      margin-bottom: 10px;
-      cursor: pointer;
-      padding: 10px;
-      background-color: #f2f2f2;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
-    
-    .group-item:hover {
-      background-color: #e6e6e6;
-    }
-
-    .list-group-btn {
-      display: block;
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #079e2d;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    
-    #create-group-btn {
-      display: block;
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    
-    #create-group-btn:hover {
-      background-color: #0069d9;
-    }
-    
-    .message-item {
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #f9f9f9;
-      border-radius: 4px;
-    }
-    
-    h2 {
-      margin-top: 0;
-    }
-
-    .message-input {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 20px;
-      box-sizing: border-box;
-      background-color: #f0f0f0;
-    }
-
-    #message-form {
-      display: flex;
-      align-items: center;
-    }
-
-    #message-input {
-      flex-grow: 1;
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 4px;
-    }
-
-    #send-button {
-      padding: 8px 12px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-left: 10px;
-      transition: background-color 0.3s ease;
-    }
-    
-    #add-userToGroup {
-      padding: 8px 12px;
-      background-color: #15910a;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-left: 10px;
-      transition: background-color 0.3s ease;
-    }
-
-    #send-button:hover {
-      background-color: #0069d9;
-    }
-
-    #message-list { list-style-type: none; margin: 0; padding: 0; }
-    #message-list > li { padding: 0.5rem 1rem; }
-    #message-list > li:nth-child(odd) { background: #efefef; }
-
-
-  </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
   <div class="container">
@@ -160,121 +22,20 @@
         <input type="text" id="message-group-id" hidden value="">
         <input type="text" id="message-input" placeholder="Type your message...">
         <button type="submit" id="send-button">Send</button>
-        <button type="button" id="add-userToGroup">Add User</button>
       </form>
 
-      
+    </div>
+    
+    <div style="display: none" class="adminsection" id="adminsection"><h2>Users</h2>
+      <ul id="users-list"></ul>
+      <button type="button" id="add-userToGroup">Add User</button>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
  
+  <script src="/js/chat.js"></script>
 
-  <script>
-    const groupListItem = document.querySelector('#group-list');
-    const messageListItem = document.querySelector('#message-list');
-    const messageGroupId = document.querySelector('#message-group-id');
-
-    // add user to group
-    document.querySelector('#add-userToGroup').addEventListener('click', (e) => {
-      e.preventDefault();
-      const groupId = document.querySelector('#message-group-id').value;
-      if(!groupId) { return alert('Select a Group to Add User') }
-      const newUserId = prompt('Enter the User ID');
-      if(!newUserId) { return alert('User ID cannot be null') }
-      axios.post('addusertogroup', { groupId: groupId, newUserId: newUserId }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(result => {
-        alert(result.data.message);
-      })
-      .catch(error => {
-        alert(error.response.data.message);
-      });
-    })
-
-    // sending the message 
-    const sendMessageForm = document.querySelector('#message-form')
-    sendMessageForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const group_id = document.querySelector('#message-group-id').value;
-      const message = document.querySelector('#message-input').value;
-      axios.post('addmessage', { group_id: group_id, message: message }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(result => {
-        document.querySelector('#message-input').value = '';
-        const li = document.createElement('li');
-        li.textContent = message;
-        messageListItem.appendChild(li);
-      });
-    })
-
-    function showMessagesOnScreen(messages, groupId) {
-      messageListItem.innerHTML = '';
-      messages.forEach(element => {
-        const liItem = document.createElement('li');
-        liItem.textContent = element.message;
-        messageListItem.appendChild(liItem);
-      })
-      messageGroupId.value = groupId;
-    }
-
-    function showGroupsOnScreen() {
-      axios.post('groups', {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(groups => {
-        groupListItem.innerHTML = '';
-        groups.data.forEach(group => {
-          let listItem = document.createElement('li');
-          listItem.textContent = group.name;
-          listItem.classList.add('list-group-btn')
-          listItem.addEventListener('click', () => {
-            let groupId = group.id;
-            axios.post('messages', { groupId: groupId }, {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }).then(result => { showMessagesOnScreen(result.data.messages, groupId) })
-            .catch(error => console.log(error));
-          })
-          groupListItem.appendChild(listItem);
-        });
-      })
-      .catch(error => console.log(error));
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      showGroupsOnScreen();
-    })
-
-
-
-    const createGroupBtn = document.querySelector('#create-group-btn');
-    createGroupBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const groupName = prompt("Enter the group Name.");
-      if(!groupName) { alert('Group Name should be Null!' ); return  }
-      axios.post('creategroup', { group_name: groupName }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then(messageCreated => {
-        if(messageCreated.data.groupCreated) {
-          showGroupsOnScreen();
-        }
-        console.log(messageCreated);
-      })
-      .catch(error => console.log(error));
-    })
-  </script>
 </body>
 </html>

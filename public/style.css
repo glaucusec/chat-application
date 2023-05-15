@@ -1,0 +1,164 @@
+
+/* CSS styling for the layout */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+.container {
+  display: flex;
+  width: 1200px;
+  height: 600px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.groups {
+  flex-basis: 30%;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+  overflow: auto
+}
+
+.messages {
+  flex-basis: 40%;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.adminsection {
+  flex-basis: 30%;
+  border-left: 1px solid #ccc;
+  padding: 20px;
+}
+
+.group-item {
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f2f2f2;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.group-item:hover {
+  background-color: #e6e6e6;
+}
+
+.list-group-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #079e2d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#create-group-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#create-group-btn:hover {
+  background-color: #0069d9;
+}
+
+.message-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.message-input {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+}
+
+#message-form {
+  display: flex;
+  align-items: center;
+}
+
+#message-input {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+}
+
+#send-button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#add-userToGroup {
+  padding: 8px 12px;
+  background-color: #15910a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#send-button:hover {
+  background-color: #0069d9;
+}
+
+.removeUser {
+  padding: 8px 12px;
+  background-color: #fa0000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.makeAdmin {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#message-list { list-style-type: none; margin: 0; padding: 0; }
+#message-list > li { padding: 0.5rem 1rem; }
+#message-list > li:nth-child(odd) { background: #efefef; }

@@ -3,9 +3,9 @@ const rootDir = require('../util/path');
 const Sequelize = require('sequelize');
 
 const Message = require('../models/message');
-const UserGroup = require('../models/usergroup');
 const User = require('../models/user');
 const Group = require('../models/group');
+const GroupMember = require('../models/groupmember');
 
 exports.getChatApp = (req, res, next) => {
     res.sendFile(path.join(rootDir, 'views', 'chat.html'));
@@ -14,7 +14,7 @@ exports.getChatApp = (req, res, next) => {
 exports.createNewGroup = async (req, res, next) => {
     const groupName = req.body.group_name;
     try {
-        await req.user.createGroup( { name: groupName } );
+        await req.user.createGroup( { name: groupName }, {through: { isAdmin: true }} );
         console.log(`Group created by User ${req.user.id}`)
         res.status(200).json( { groupCreated: true} )
     } catch(err) {
@@ -27,6 +27,7 @@ exports.fetchGroups = async(req, res, next) => {
     const userid = req.user.id;
     try {
         const groups = await req.user.getGroups();
+        console.log(JSON.stringify(groups));
         res.status(200).json(groups);
     } catch(err) {
         console.log(err);
@@ -38,7 +39,7 @@ exports.createNewMessage = async (req, res, next) => {
     const message = req.body.message;
     const groupId = req.body.group_id;
     try {
-        await Message.create({ message: message, groupId: groupId })
+        await req.user.createMessage({ message: message, groupId: groupId, senderId: req.user.id })
         res.status(200).json({ messageCreated: true });
     } catch(err) {
         console.log('error @ createNewMessage', err);
@@ -50,20 +51,17 @@ exports.addUserToGroup = async(req, res, next) => {
     const groupId = req.body.groupId;
     const userId = req.body.newUserId;
     try {
-        const users = await UserGroup.findAll({ attributes: ['userId'], where: {groupId: groupId}})
-        const userIds = users.map(user => user.dataValues.userId)
-        console.log(userIds);
-        if (userIds.includes(Number(userId))) { 
-            console.log('User is a Existing Member');
-            return res.status(409).json( { message: 'User is an Existing Member' })
-        }
-        const user = await User.findByPk(userId);
+        const user = await User.findOne({where: { id: userId }})
         if(!user) {
             console.log('User not Found@addUserToGroup');
             return res.status(404).json({message: 'User Not Found'})
         }
-        const group = await Group.findByPk(groupId);
-        await user.addGroup(group);
+        const users = await GroupMember.findAll({where: { groupId: groupId, memberId: userId }})
+        if(users.length) {
+            console.log('User is a Existing Member');
+            return res.status(409).json( { message: 'User is an Existing Member' })
+        }
+        const group = await GroupMember.create({ groupId: groupId, memberId: userId })
         res.status(200).json({message: 'User is added to Group'})
     } catch(err) {
         console.log('Error @addUsetToGroup', err);
@@ -71,10 +69,85 @@ exports.addUserToGroup = async(req, res, next) => {
     }
 }
 
+exports.removeUserFromGroup = async(req, res, next) => {
+    const groupId = req.body.groupId;
+    const memberId = req.body.memberId;
+
+    try {
+        await GroupMember.destroy({where: { groupId: groupId, memberId: memberId }})
+        res.status(200).json(true);
+    } catch(err) {
+        res.status(500).json(false);
+        console.log(err);
+    }
+}
+
+exports.makeGroupAdmin = async(req, res, next) => {
+    const groupId = Number(req.body.groupId);
+    const memberId = req.body.memberId;
+
+    try {
+        await GroupMember.update({ isAdmin: true } , { where: { groupId: groupId, memberId: memberId } })
+        res.status(200).json(true);
+    } catch(err) {
+        res.status(500).json(false);
+        console.log(err);
+    }
+}
+
+exports.isAdminOrNot = async(req, res, next) => {
+    const userId = req.user.id;
+    const groupId = req.body.groupId;
+    try {
+        const isAdmin = await GroupMember.findAll({
+            attributes: ['isAdmin'],
+            where: { memberId: userId,  groupId: groupId }
+        })
+        res.status(200).json(isAdmin[0]);
+    } catch(err) {
+        console.log('Error@isAdminOrNot ->>> ',err);
+        res.status(500).json({message: 'Internal Server Error'});
+    }
+}
+
+exports.fetchGroupMembers = async(req, res, next) => {
+    console.log(req.user.id);
+    const groupId = req.body.groupId;
+    try {
+        const GroupMembers = await Group.findAll({
+            attributes: [],
+            where: { id: groupId },
+            include: [{
+                model: User,
+                attributes: ['id','name'],
+                through: { attributes: [] }
+            }],
+        })
+        res.status(200).json(GroupMembers[0]['users']);
+        console.log(JSON.stringify(GroupMembers));
+    } catch(err) {
+        console.log('Error@fetchGroupMembers->>',err)
+    }
+    
+    // Group.findAll({
+    //     where: { id: groupId },
+    //     include: [{
+    //         model:User,
+    //         attributes: ['name'],
+    //         through: { attributes: ['isAdmin'], where: {groupId: groupId} },
+    //     }]
+    // }).then(result => console.log(JSON.stringify(result, null, 2)))
+    // .catch(err => console.log(err));
+
+}
+
 exports.fetchAllMessages = async (req, res, next) => {
     const groupId = req.body.groupId;
     try {
-        const messages = await Message.findAll( {where: {groupId: groupId}} )
+        const messages = await Message.findAll({
+            where: { groupId: groupId },
+            attributes: ['message'] 
+        })
         if(messages) { res.status(200).json({messages: messages})};
     } catch(err) {
         console.log('error @ fetchAllMessages', err);
@@ -91,3 +164,4 @@ exports.fetchAllMessages = async (req, res, next) => {
     // });
     // res.status(200).send(prevMessages);
 }
+

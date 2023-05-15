@@ -26,4 +26,12 @@ router.post('/addmessage', auth.authenticate, chatController.createNewMessage);
 
 router.post('/addusertogroup', auth.authenticate, chatController.addUserToGroup);
 
+router.post('/group-members', auth.authenticate, chatController.fetchGroupMembers);
+
+router.post('/isAdmin', auth.authenticate, chatController.isAdminOrNot);
+
+router.post('/makeGroupAdmin', auth.authenticate, chatController.makeGroupAdmin)
+
+router.post('/removeUserFromGroup', auth.authenticate, chatController.removeUserFromGroup);
+
 module.exports = router;
