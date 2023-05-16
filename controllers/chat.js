@@ -27,7 +27,6 @@ exports.fetchGroups = async(req, res, next) => {
     const userid = req.user.id;
     try {
         const groups = await req.user.getGroups();
-        console.log(JSON.stringify(groups));
         res.status(200).json(groups);
     } catch(err) {
         console.log(err);
@@ -36,15 +35,15 @@ exports.fetchGroups = async(req, res, next) => {
 }
 
 exports.createNewMessage = async (req, res, next) => {
-    const message = req.body.message;
-    const groupId = req.body.group_id;
-    try {
-        await req.user.createMessage({ message: message, groupId: groupId, senderId: req.user.id })
-        res.status(200).json({ messageCreated: true });
-    } catch(err) {
-        console.log('error @ createNewMessage', err);
-        res.status(500).json({ messageCreated: false });
-    }
+    // const message = req.body.message;
+    // const groupId = req.body.group_id;
+    // try {
+    //     await req.user.createMessage({ message: message, groupId: groupId, senderId: req.user.id })
+    //     res.status(200).json({ messageCreated: true });
+    // } catch(err) {
+    //     console.log('error @ createNewMessage', err);
+    //     res.status(500).json({ messageCreated: false });
+    // }
 }
 
 exports.addUserToGroup = async(req, res, next) => {
@@ -111,7 +110,6 @@ exports.isAdminOrNot = async(req, res, next) => {
 }
 
 exports.fetchGroupMembers = async(req, res, next) => {
-    console.log(req.user.id);
     const groupId = req.body.groupId;
     try {
         const GroupMembers = await Group.findAll({
@@ -124,7 +122,6 @@ exports.fetchGroupMembers = async(req, res, next) => {
             }],
         })
         res.status(200).json(GroupMembers[0]['users']);
-        console.log(JSON.stringify(GroupMembers));
     } catch(err) {
         console.log('Error@fetchGroupMembers->>',err)
     }
@@ -164,4 +161,3 @@ exports.fetchAllMessages = async (req, res, next) => {
     // });
     // res.status(200).send(prevMessages);
 }
-

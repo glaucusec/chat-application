@@ -1,4 +1,6 @@
 
+let socket = io();
+
 const groupListItem = document.querySelector('#group-list');
 const messageListItem = document.querySelector('#message-list');
 const messageGroupId = document.querySelector('#message-group-id');
@@ -86,18 +88,24 @@ const sendMessageForm = document.querySelector('#message-form')
 sendMessageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const group_id = document.querySelector('#message-group-id').value;
-  const message = document.querySelector('#message-input').value;
-  axios.post('addmessage', { group_id: group_id, message: message }, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(result => {
-    document.querySelector('#message-input').value = '';
+  const message = document.querySelector('#message-input');
+  if(message.value) {
+    socket.emit('chat-message', message.value, group_id);
+    message.value = '';
+  }
+  // .then(result => {
+  //   document.querySelector('#message-input').value = '';
+  //   const li = document.createElement('li');
+  //   li.textContent = message;
+  //   messageListItem.appendChild(li);
+  // });
+})
+
+socket.on('chat-message', (msg)=> {
+  document.querySelector('#message-input').value = '';
     const li = document.createElement('li');
-    li.textContent = message;
+    li.textContent = msg;
     messageListItem.appendChild(li);
-  });
 })
 
 function showMessagesOnScreen(messages, groupId) {
@@ -131,6 +139,7 @@ function showGroupsOnScreen() {
         }).then(result => { 
           showMessagesOnScreen(result.data.messages, groupId)
           adminDisplay(); 
+          socket.emit('join-group', document.querySelector('#message-group-id').value);
         })
         .catch(error => console.log(error));
       })
