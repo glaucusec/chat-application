@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Message = sequelize.define('message', {
+const ArchiveMessage = sequelize.define('archivemessage', {
     id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -15,4 +15,4 @@ const Message = sequelize.define('message', {
     }
 })
 
-module.exports = Message;
+module.exports = ArchiveMessage;
