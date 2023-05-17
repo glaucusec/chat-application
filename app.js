@@ -6,6 +6,8 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
+const formData = require('express-form-data');
+const os = require('os');
 
 // user packages
 const sequelize = require('./util/database');
@@ -22,6 +24,16 @@ const GroupMember = require('./models/groupmember');
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
+
+const options = {
+    uploadDir: os.tmpdir(),
+    autoClean: true,
+};
+app.use(express.json()); // This is default way of parsing JSON in our server
+app.use(formData.parse(options)); 
+app.use(formData.format()); // Format null key value pairs
+app.use(formData.stream()); // Convert our files to stream 
+app.use(formData.union()); // Merging the req.files object to our req.body object
 
 app.use(cors( { origin: '*' } ))
 app.use(bodyParser.json());

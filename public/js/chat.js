@@ -7,6 +7,44 @@ const messageGroupId = document.querySelector('#message-group-id');
 const adminSection = document.querySelector('#adminsection');
 const usersList = document.querySelector('#users-list');
 
+// checking if the file is URL or not
+function isURL(str) {
+  // Regular expression pattern for URL validation
+  const urlPattern = /^(?:\w+:)?\/\/([^\s.]+\.\S{2}|localhost[:?\d]*)\S*$/;
+  
+  return urlPattern.test(str);
+}
+
+// fileuploadsection
+const fileInput = document.querySelector('#file-input');
+const uploadButton = document.querySelector('#upload-file');
+
+uploadButton.addEventListener('click', () => {
+  fileInput.click();
+})
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+  console.log(formData);
+  axios.post('/image-upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(response => {
+    if(response.data.fileURL){
+      const group_id = document.querySelector('#message-group-id').value;
+      if(group_id) {
+        socket.emit('chat-message', response.data.fileURL, group_id);
+      }
+    }
+  })
+  .catch(error => console.log(error));
+})
+
+
 // if the user is admin? features of the admin.
 async function adminFeatures(groupId) {
   usersList.innerHTML = '';
@@ -103,17 +141,37 @@ sendMessageForm.addEventListener('submit', (e) => {
 
 socket.on('chat-message', (msg)=> {
   document.querySelector('#message-input').value = '';
-    const li = document.createElement('li');
-    li.textContent = msg;
-    messageListItem.appendChild(li);
+  if(msg) {
+    if(isURL(msg)) {
+      const li = document.createElement('li');
+      let link = document.createElement('a');
+      link.href = msg;
+      link.textContent = 'File Sent';
+      li.appendChild(link);
+      messageListItem.appendChild(li);
+    } else {
+      const li = document.createElement('li');
+      li.textContent = msg;
+      messageListItem.appendChild(li);
+    }
+  }
 })
 
 function showMessagesOnScreen(messages, groupId) {
   messageListItem.innerHTML = '';
   messages.forEach(element => {
-    const liItem = document.createElement('li');
-    liItem.textContent = element.message;
-    messageListItem.appendChild(liItem);
+    if(isURL(element.message)) {
+      const li = document.createElement('li');
+      let link = document.createElement('a');
+      link.href = element.message;
+      link.textContent = 'File Sent';
+      li.appendChild(link);
+      messageListItem.appendChild(li);
+    } else {
+      const liItem = document.createElement('li');
+      liItem.textContent = element.message;
+      messageListItem.appendChild(liItem);
+    }
   })
   messageGroupId.value = groupId;
 }

@@ -38,6 +38,8 @@ module.exports = (io) => {
     
     router.post('/removeUserFromGroup', auth.authenticate, chatController.removeUserFromGroup);
 
+    router.post('/image-upload', auth.authenticate, chatController.imageUpload);
+
     io.on('connection', (socket) => {
 
         socket.on('join-group', (groupId) => {
@@ -49,7 +51,7 @@ module.exports = (io) => {
                 try {
                     await Message.create({ message: msg, groupId: groupId })
                 } catch(err) {
-                    console.log('error @ createNewMessage', err);
+                    console.log('error @ socketEmitting', err);
                 }
             }
         })

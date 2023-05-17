@@ -7,6 +7,9 @@ const User = require('../models/user');
 const Group = require('../models/group');
 const GroupMember = require('../models/groupmember');
 
+const S3Services = require('../services/s3services');
+
+
 exports.getChatApp = (req, res, next) => {
     res.sendFile(path.join(rootDir, 'views', 'chat.html'));
 }
@@ -44,6 +47,20 @@ exports.createNewMessage = async (req, res, next) => {
     //     console.log('error @ createNewMessage', err);
     //     res.status(500).json({ messageCreated: false });
     // }
+}
+
+exports.imageUpload = async (req, res, next) => {
+    const filePath = req.body.file.path;
+    const fileExtension = (
+        filePath.substring(filePath.lastIndexOf('.') + 1) + ''
+    ).toLowerCase();
+    try {
+        const fileURL = await S3Services.uploadToS3(req.body.file, new Date().toString() + '.' + fileExtension);
+        res.status(200).json({ fileURL: fileURL });
+    }catch(err) {
+        console.log(err);
+        res.status(500).json({message: 'Internal Server Error'})
+    }
 }
 
 exports.addUserToGroup = async(req, res, next) => {
