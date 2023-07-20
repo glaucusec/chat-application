@@ -108,6 +108,7 @@ document.querySelector('#add-userToGroup').addEventListener('click', (e) => {
   if(!groupId) { return alert('Select a Group to Add User') }
   const newUserId = prompt('Enter the User ID');
   if(!newUserId) { return alert('User ID cannot be null') }
+  console.log(newUserId);
   axios.post('addusertogroup', { groupId: groupId, newUserId: newUserId }, {
     headers: {
       'Content-Type': 'application/json'

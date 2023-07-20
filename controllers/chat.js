@@ -1,6 +1,6 @@
 const path = require('path');
 const rootDir = require('../util/path');
-const Sequelize = require('sequelize');
+// const Sequelize = require('sequelize');
 
 const Message = require('../models/message');
 const User = require('../models/user');
@@ -101,6 +101,8 @@ exports.removeUserFromGroup = async(req, res, next) => {
 exports.makeGroupAdmin = async(req, res, next) => {
     const groupId = Number(req.body.groupId);
     const memberId = req.body.memberId;
+    console.log(groupId);
+    console.log(memberId);
 
     try {
         await GroupMember.update({ isAdmin: true } , { where: { groupId: groupId, memberId: memberId } })

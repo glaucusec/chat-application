@@ -20,42 +20,42 @@ module.exports = (io) => {
     
     router.get('/chat', auth.authenticate ,chatController.getChatApp);
     
-    router.post('/messages', auth.authenticate, chatController.fetchAllMessages);
+    // router.post('/messages', auth.authenticate, chatController.fetchAllMessages);
     
-    router.post('/creategroup', auth.authenticate, chatController.createNewGroup)
+    // router.post('/creategroup', auth.authenticate, chatController.createNewGroup)
     
-    router.post('/groups', auth.authenticate, chatController.fetchGroups);
+    // router.post('/groups', auth.authenticate, chatController.fetchGroups);
     
-    router.post('/addmessage', auth.authenticate, chatController.createNewMessage);
+    // router.post('/addmessage', auth.authenticate, chatController.createNewMessage);
     
-    router.post('/addusertogroup', auth.authenticate, chatController.addUserToGroup);
+    // router.post('/addusertogroup', auth.authenticate, chatController.addUserToGroup);
     
-    router.post('/group-members', auth.authenticate, chatController.fetchGroupMembers);
+    // router.post('/group-members', auth.authenticate, chatController.fetchGroupMembers);
     
-    router.post('/isAdmin', auth.authenticate, chatController.isAdminOrNot);
+    // router.post('/isAdmin', auth.authenticate, chatController.isAdminOrNot);
     
-    router.post('/makeGroupAdmin', auth.authenticate, chatController.makeGroupAdmin)
+    // router.post('/makeGroupAdmin', auth.authenticate, chatController.makeGroupAdmin)
     
-    router.post('/removeUserFromGroup', auth.authenticate, chatController.removeUserFromGroup);
+    // router.post('/removeUserFromGroup', auth.authenticate, chatController.removeUserFromGroup);
 
-    router.post('/image-upload', auth.authenticate, chatController.imageUpload);
+    // router.post('/image-upload', auth.authenticate, chatController.imageUpload);
 
-    io.on('connection', (socket) => {
+    // io.on('connection', (socket) => {
 
-        socket.on('join-group', (groupId) => {
-            socket.join(groupId)
-        })
-        socket.on('chat-message', async (msg, groupId) => {
-            io.to(groupId).emit('chat-message', msg);
-            if(msg) {
-                try {
-                    await Message.create({ message: msg, groupId: groupId })
-                } catch(err) {
-                    console.log('error @ socketEmitting', err);
-                }
-            }
-        })
-    })
+    //     socket.on('join-group', (groupId) => {
+    //         socket.join(groupId)
+    //     })
+    //     socket.on('chat-message', async (msg, groupId) => {
+    //         io.to(groupId).emit('chat-message', msg);
+    //         if(msg) {
+    //             try {
+    //                 await Message.create({ message: msg, groupId: groupId })
+    //             } catch(err) {
+    //                 console.log('error @ socketEmitting', err);
+    //             }
+    //         }
+    //     })
+    // })
 
     return router;
 }
