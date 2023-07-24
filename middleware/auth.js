@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const path = require('path');
+const rootDir = require('../util/path');
 
 require('dotenv').config();
 
 exports.authenticate = async (req, res, next) => {
     try {
         const token = req.cookies.token;
-        if(!token) { return res.status(404).json( {error: 'User UnAuthorized'} ) }
+        if(!token) { return res.sendFile(path.join(rootDir, 'views', 'unauthorized.html')) }
         const user = jwt.verify(token, process.env.TOKEN_SECRET);
         const userDetails = await User.findById(user.id);
         if(!userDetails) { 

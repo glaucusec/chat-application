@@ -17,7 +17,7 @@ exports.getChatApp = (req, res, next) => {
 exports.createNewGroup = async (req, res, next) => {
     const groupName = req.body.group_name;
     try {
-        await req.user.createGroup( { name: groupName }, {through: { isAdmin: true }} );
+        await Group.create( { name: groupName });
         console.log(`Group created by User ${req.user.id}`)
         res.status(200).json( { groupCreated: true} )
     } catch(err) {

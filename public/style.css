@@ -1,5 +1,7 @@
 
-/* CSS styling for the layout */
+
+/* 
+
 body {
   display: flex;
   justify-content: center;
@@ -161,4 +163,4 @@ h2 {
 
 #message-list { list-style-type: none; margin: 0; padding: 0; }
 #message-list > li { padding: 0.5rem 1rem; }
-#message-list > li:nth-child(odd) { background: #efefef; }
+#message-list > li:nth-child(odd) { background: #efefef; } */

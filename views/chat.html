@@ -1,44 +1,56 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Group Chat Application</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <div class="groups">
-      <h2 style="color: #333;">Groups</h2>
-      <ul id="group-list">
-        <!-- Group list items will be dynamically added here -->
-      </ul>
-      <button id="create-group-btn">Create a New Group</button>
+  <head>
+    <title>Group Chat Application</title>
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="columns m-4">
+        <div class="column has-border-right is-one-third is-centered "> <!-- Add custom class "has-border-right" here -->
+          <h2 class="title is-3 ">Groups</h2>
+          <ul id="group-list">
+            <!-- Group list items will be dynamically added here -->
+          </ul>
+          <button class="button is-primary" id="create-group-btn">Create Group</button>
+        </div>
+        <div class="column has-border-right">
+          <h2 class="title is-3" id="group-name" >Select A Group</h2>
+          <ul id="message-list">
+            <!-- Messages will be dynamically added here -->
+          </ul>
+          <form id="message-form">
+            <input type="text" id="message-group-id" hidden value="">
+            <div class="field">
+              <input class="input" type="text" id="message-input" placeholder="Type your message...">
+            </div>
+            <div class="field is-grouped">
+              <div class="control">
+                <button class="button is-primary" type="submit" id="send-button">Send</button>
+              </div>
+              <div class="control">
+                <input type="file" id="file-input" style="display: none;">
+                <button class="button is-light" id="upload-file">Select File</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div style="display: none" class="adminsection column is-one-quarter" id="adminsection">
+          <h2 class="title is-3" >Manage Users</h2>
+          <ul id="users-list"></ul>
+          <button class="button is-primary" type="button" id="add-userToGroup">Add User</button>
+        </div>
+      </div>
     </div>
-    <div class="messages">
-      <h2 id="group-name" style="color: #333;">Select a group to view messages</h2>
-      <ul id="message-list">
-        <!-- Messages will be dynamically added here -->
-      </ul>
-      <form id="message-form">
-        <input type="text" id="message-group-id" hidden value="">
-        <input type="text" id="message-input" placeholder="Type your message...">
-        <button type="submit" id="send-button">Send</button>
-        <input type="file" id="file-input" style="display: none;">
-        <button id="upload-file">Select File</button>
-      </form>
 
-    </div>
-    
-    <div style="display: none" class="adminsection" id="adminsection"><h2>Users</h2>
-      <ul id="users-list"></ul>
-      <button type="button" id="add-userToGroup">Add User</button>
-    </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
- 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/chat.js"></script>
-
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/chat.js"></script>
+  </body>
+  
 </html>

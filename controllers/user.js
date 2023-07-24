@@ -8,6 +8,11 @@ const rootDir = require('../util/path')
 
 const User = require('../models/user');
 
+function isValidEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
 function generateAccessToken(id, name) {
     return jwt.sign( { id: id, name: name }, process.env.TOKEN_SECRET)
 }
@@ -39,8 +44,13 @@ exports.getLoginPage = (req, res, next) => {
     res.sendFile(path.join(rootDir, 'views', 'login.html'));
 }
 
+
+
 exports.postLoginData = async (req, res, next) => {
     const { email, password } = req.body;
+    if(!isValidEmail(email)) { 
+        return res.status(401).json({ error: 'Invalid Credentials' })
+    }
     const maxAge = 3 * 60 * 60;
     try {
         const userExists = await User.findOne({ email: email })
@@ -58,7 +68,7 @@ exports.postLoginData = async (req, res, next) => {
               });
             res.status(200).json( { message: 'User login Successful', success: true, token: token })
         } else {
-            res.status(401).json( { error: 'Incorrect Password; User not Authorized' });
+            res.status(401).json( { error: 'Invalid Credentials' });
         }
 
     } catch(err) {

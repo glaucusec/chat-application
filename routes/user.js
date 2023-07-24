@@ -22,7 +22,7 @@ module.exports = (io) => {
     
     // router.post('/messages', auth.authenticate, chatController.fetchAllMessages);
     
-    // router.post('/creategroup', auth.authenticate, chatController.createNewGroup)
+    router.post('/creategroup', auth.authenticate, chatController.createNewGroup)
     
     // router.post('/groups', auth.authenticate, chatController.fetchGroups);
     

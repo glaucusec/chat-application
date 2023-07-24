@@ -19,11 +19,11 @@
                         <div id="show-message" class="field"></div>
                         <div class="field">
                             <div class="control">
-                              <input class="input" type="text" placeholder="Name" name="name">
+                              <input class="input" type="text" placeholder="Name" name="name" required>
                             </div>
                           </div>
                         <p class="control has-icons-left has-icons-right">
-                          <input class="input" type="email" placeholder="Email" name="email">
+                          <input class="input" type="email" placeholder="Email" name="email" required>
                           <span class="icon is-small is-left">
                             <i class="fas fa-envelope"></i>
                           </span>
@@ -34,19 +34,26 @@
                       </div>
                       <div class="field">
                         <p class="control has-icons-left">
-                          <input class="input" type="password" placeholder="Password" name="password">
+                          <input class="input" type="password" placeholder="Password" name="password" required>
                           <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
                           </span>
                         </p>
                       </div>
                       <div class="field">
-                        <p class="control">
-                          <button id="sign-up-button" class="button is-success">
-                            Sign Up
-                          </button>
-                          add a login link here
-                        </p>
+                        <div class="columns">
+                          <div class="column">
+                            <button id="sign-up-button" class="button is-success">
+                              Sign Up
+                            </button>
+                          </div>
+                          <div class="column">
+                            <button id="sign-in-button" class="button is-success">
+                              Login
+                            </button>
+                          </div>
+                        </div>
+                        
                       </div>
                 </form>
             </div>
@@ -60,9 +67,16 @@
     
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
     <script>
+      const sign_in = document.querySelector('#sign-in-button')
       const form = document.querySelector('#sign-up-form');
       const button = document.querySelector('#sign-up-button');
       const success = document.querySelector('#show-message')
+
+      // login redirect button.
+      sign_in.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.location = '/login';
+      });
 
       button.addEventListener('click', (e) => {
         e.preventDefault();
@@ -82,8 +96,8 @@
             </div>
             <div class="message-body">You signed up. Redirecting ....</div>
             `
-            success.appendChild(article);
             const message = document.querySelector('.message');
+            success.appendChild(article);
             setTimeout(() => {
               document.location = '/login'
             }, 1200);

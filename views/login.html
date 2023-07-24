@@ -18,7 +18,7 @@
                 <h1 class="title is-1">Chat Application - Login</h1>
                 <div id="show-message" class="field"></div>
                 <p class="control has-icons-left has-icons-right">
-                  <input class="input" type="email" placeholder="Email" name="email">
+                  <input class="input" type="email" placeholder="Email" name="email" required>
                   <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                   </span>
@@ -29,7 +29,7 @@
               </div>
               <div class="field">
                 <p class="control has-icons-left">
-                  <input class="input" type="password" placeholder="Password" name="password">
+                  <input class="input" type="password" placeholder="Password" name="password" required>
                   <span class="icon is-small is-left">
                     <i class="fas fa-lock"></i>
                   </span>
@@ -55,7 +55,7 @@
     <script>
       const form = document.querySelector('#login-form');
       const button = document.querySelector('#login-button');
-      const success = document.querySelector('#show-message');
+      const show_message = document.querySelector('#show-message');
 
       button.addEventListener('click', (e) => {
         e.preventDefault();
@@ -65,10 +65,44 @@
             'Content-Type': 'application/json'
           }
         }).then(res => {
-            alert(res.data.message);
-            // document.location = 'chat'
+            let article = document.createElement('article');
+            article.classList.add('message', 'is-success');
+            article.innerHTML = `
+            <div class="message-header">
+              <p>Success</p>
+              <button class="delete" aria-label="delete"></button>
+            </div>
+            <div class="message-body">
+              Redirecting to Dashboard...
+            </div>
+            `;
+            show_message.appendChild(article);
+            setTimeout(() => {
+              document.location = '/chat';
+            }, 1000)
         })
-        .catch(err => alert(err.response.data.error));
+        .catch(err => {
+          let article = document.createElement('article');
+            article.classList.add('message', 'is-danger');
+            article.innerHTML = `
+            <div class="message-header">
+              <p>Success</p>
+              <button class="delete" aria-label="delete"></button>
+            </div>
+            <div class="message-body">
+              ${err.response.data.error}
+            </div>
+            `;
+            show_message.appendChild(article);
+            const message = document.querySelector('.message');
+            document.querySelector('.delete').addEventListener('click', (e) => {
+                e.preventDefault();
+                message.remove();
+            })
+            setTimeout(() => {
+              message.remove();
+            }, 3000);
+        });
       })
     </script>
 
