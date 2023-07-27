@@ -16,33 +16,33 @@ function isURL(str) {
 }
 
 // fileuploadsection
-const fileInput = document.querySelector('#file-input');
-const uploadButton = document.querySelector('#upload-file');
+// const fileInput = document.querySelector('#file-input');
+// const uploadButton = document.querySelector('#upload-file');
 
-uploadButton.addEventListener('click', () => {
-  fileInput.click();
-})
+// uploadButton.addEventListener('click', () => {
+//   fileInput.click();
+// })
 
-fileInput.addEventListener('change', () => {
-  const file = fileInput.files[0];
-  const formData = new FormData();
-  formData.append('file', file);
-  console.log(formData);
-  axios.post('/image-upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-  .then(response => {
-    if(response.data.fileURL){
-      const group_id = document.querySelector('#message-group-id').value;
-      if(group_id) {
-        socket.emit('chat-message', response.data.fileURL, group_id);
-      }
-    }
-  })
-  .catch(error => console.log(error));
-})
+// fileInput.addEventListener('change', () => {
+//   const file = fileInput.files[0];
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   console.log(formData);
+//   axios.post('/image-upload', formData, {
+//     headers: {
+//       'Content-Type': 'multipart/form-data'
+//     }
+//   })
+//   .then(response => {
+//     if(response.data.fileURL){
+//       const group_id = document.querySelector('#message-group-id').value;
+//       if(group_id) {
+//         socket.emit('chat-message', response.data.fileURL, group_id);
+//       }
+//     }
+//   })
+//   .catch(error => console.log(error));
+// })
 
 
 // if the user is admin? features of the admin.
@@ -53,12 +53,15 @@ async function adminFeatures(groupId) {
       headers: { 'Content-Type': 'application/json' }
     })
     Members.data.forEach(member => {
-      const li = document.createElement('li');
-      li.textContent = member.name;
+      const userDiv = document.createElement('div');
+      userDiv.classList.add('column', 'is-full', 'has-background-light');
+      const userName = document.createElement('h1');
+      userName.classList.add('title', 'is-5')
+      userName.innerText = member.name;
 
       const makeAdminBtn = document.createElement('button');
       makeAdminBtn.textContent = 'Make Group Admin';
-      makeAdminBtn.classList.add('makeAdmin');
+      makeAdminBtn.classList.add('button', 'is-small');
       makeAdminBtn.addEventListener('click', () => {
         axios.post('makeGroupAdmin', { groupId: groupId, memberId: member.id }, {
           headers: { 'Content-Type': 'application/json' }
@@ -68,17 +71,17 @@ async function adminFeatures(groupId) {
 
       const removeUserBtn = document.createElement('button');
       removeUserBtn.textContent = 'Remove User';
-      removeUserBtn.classList.add('removeUser');
+      removeUserBtn.classList.add('button', 'is-small');
       removeUserBtn.addEventListener('click', () => {
         axios.post('removeUserFromGroup', { groupId: groupId, memberId: member.id }, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then(result => { if(result){ alert('Member Removed')} else { alert('Internal Server Error')} });
       })
-
-      li.appendChild(makeAdminBtn);
-      li.appendChild(removeUserBtn);
-      usersList.appendChild(li);
+      userDiv.appendChild(userName);
+      userDiv.appendChild(makeAdminBtn);
+      userDiv.appendChild(removeUserBtn);
+      usersList.appendChild(userDiv);
     })
   } catch(err) {
     console.log(err);
@@ -108,7 +111,6 @@ document.querySelector('#add-userToGroup').addEventListener('click', (e) => {
   if(!groupId) { return alert('Select a Group to Add User') }
   const newUserId = prompt('Enter the User ID');
   if(!newUserId) { return alert('User ID cannot be null') }
-  console.log(newUserId);
   axios.post('addusertogroup', { groupId: groupId, newUserId: newUserId }, {
     headers: {
       'Content-Type': 'application/json'
@@ -152,6 +154,7 @@ socket.on('chat-message', (msg)=> {
       messageListItem.appendChild(li);
     } else {
       const li = document.createElement('li');
+      li.classList.add('groupName');
       li.textContent = msg;
       messageListItem.appendChild(li);
     }
@@ -171,6 +174,7 @@ function showMessagesOnScreen(messages, groupId) {
     } else {
       const liItem = document.createElement('li');
       liItem.textContent = element.message;
+      liItem.classList.add('groupName')
       messageListItem.appendChild(liItem);
     }
   })
@@ -187,8 +191,10 @@ function showGroupsOnScreen() {
     groupListItem.innerHTML = '';
     groups.data.forEach(group => {
       let listItem = document.createElement('li');
-      listItem.textContent = group.name;
-      listItem.classList.add('list-group-btn')
+      let listButton = document.createElement('button');
+      listButton.textContent = group.name;
+      listButton.classList.add('button', 'is-light', 'groupName');
+      listItem.appendChild(listButton);
       listItem.addEventListener('click', () => {
         let groupId = group.id;
         axios.post('messages', { groupId: groupId }, {

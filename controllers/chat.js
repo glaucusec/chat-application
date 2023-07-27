@@ -1,6 +1,6 @@
 const path = require('path');
 const rootDir = require('../util/path');
-// const Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 const Message = require('../models/message');
 const User = require('../models/user');
@@ -17,7 +17,7 @@ exports.getChatApp = (req, res, next) => {
 exports.createNewGroup = async (req, res, next) => {
     const groupName = req.body.group_name;
     try {
-        await Group.create( { name: groupName });
+        await req.user.createGroup( { name: groupName }, {through: { isAdmin: true }} );
         console.log(`Group created by User ${req.user.id}`)
         res.status(200).json( { groupCreated: true} )
     } catch(err) {
@@ -101,8 +101,6 @@ exports.removeUserFromGroup = async(req, res, next) => {
 exports.makeGroupAdmin = async(req, res, next) => {
     const groupId = Number(req.body.groupId);
     const memberId = req.body.memberId;
-    console.log(groupId);
-    console.log(memberId);
 
     try {
         await GroupMember.update({ isAdmin: true } , { where: { groupId: groupId, memberId: memberId } })

@@ -4,79 +4,68 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/15181efa86.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.4/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Sign Up</title>
 </head>
 <body>
-  <section class="section">
-    <div class="container">
-        <div class="columns is-centered">
-            <div class="column is-half">
-                <form id="sign-up-form">
-                    <div class="field">
-                        <h1 class="title is-1">Chat Application - Sign Up</h1>
-                        <div id="show-message" class="field"></div>
-                        <div class="field">
-                            <div class="control">
-                              <input class="input" type="text" placeholder="Name" name="name" required>
-                            </div>
-                          </div>
-                        <p class="control has-icons-left has-icons-right">
-                          <input class="input" type="email" placeholder="Email" name="email" required>
-                          <span class="icon is-small is-left">
-                            <i class="fas fa-envelope"></i>
-                          </span>
-                          <span class="icon is-small is-right">
-                            <i class="fas fa-check"></i>
-                          </span>
-                        </p>
-                      </div>
-                      <div class="field">
-                        <p class="control has-icons-left">
-                          <input class="input" type="password" placeholder="Password" name="password" required>
-                          <span class="icon is-small is-left">
-                            <i class="fas fa-lock"></i>
-                          </span>
-                        </p>
-                      </div>
-                      <div class="field">
-                        <div class="columns">
-                          <div class="column">
-                            <button id="sign-up-button" class="button is-success">
-                              Sign Up
-                            </button>
-                          </div>
-                          <div class="column">
-                            <button id="sign-in-button" class="button is-success">
-                              Login
-                            </button>
-                          </div>
-                        </div>
-                        
-                      </div>
-                </form>
-            </div>
+  <section class="container">
+    <div class="columns is-multiline">
+      <div class="column is-8 is-offset-2 register">
+        <div class="columns">
+          <div class="column left">
+            <h1 class="title is-1">ConnectChat</h1>
+            <div id="show-message" class="field"></div>
+            <h2 class="subtitle colored is-4">Welcome to ConnectChat! </h2>
+            <p>Join our vibrant community and start connecting with friends, family, and new acquaintances in real-time, hassle-free</p>
+            <br>
+            <h1 class=" is-5">Already a Member? <a class="colored" href="/login">Login Here</a></h1>
+          </div>
+          <div class="column right has-text-centered">
+            <h1 class="title is-4">Sign up today</h1>
+            <p class="description"></p>
+            <form id="sign-up-form">
+              <div class="field">
+                <div class="control">
+                  <input class="input is-medium" name="name" type="text" placeholder="Name">
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input class="input is-medium" name="phone" type="phone" placeholder="Phone">
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input class="input is-medium" name="email" type="email" placeholder="Email">
+                </div>
+              </div>
+              <div class="field">
+                  <div class="control">
+                    <input class="input is-medium" name="password" type="password" placeholder="Password">
+                  </div>
+              </div>
+              <button id="sign-up-button" class="button is-block is-primary is-fullwidth is-medium">Submit</button>
+              <br />
+              <small><em>By signing up, you agree to our Terms of Service and Privacy Policy.</em></small>
+            </form>
+          </div>
         </div>
+      </div>
       
-        </div>
-    </section>
-    
     </div>
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
+  </section>
+</body>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
-      const sign_in = document.querySelector('#sign-in-button')
       const form = document.querySelector('#sign-up-form');
       const button = document.querySelector('#sign-up-button');
       const success = document.querySelector('#show-message')
-
-      // login redirect button.
-      sign_in.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.location = '/login';
-      });
 
       button.addEventListener('click', (e) => {
         e.preventDefault();
@@ -110,5 +99,6 @@
       })
     </script>
 
-  </body>
+
+
 </html>

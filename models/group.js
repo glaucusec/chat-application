@@ -1,12 +1,20 @@
-const mongoose = require('mongoose');
+const Sequelize = require('sequelize');
 
-const Schema = mongoose.Schema;
+const sequelize = require('../util/database');
 
-const groupSchema = new Schema({
+const Group = sequelize.define('group', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+    }, 
     name: {
-        type: String, 
-        required: false
+        type: Sequelize.STRING, 
+        allowNull: false
     }
+}, {
+    timestamps: false
 })
 
-module.exports = mongoose.model('Group', groupSchema);
+module.exports = Group;

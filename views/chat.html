@@ -1,56 +1,75 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Group Chat Application</title>
-    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
-  </head>
-  <body>
-    <div class="container">
-      <div class="columns m-4">
-        <div class="column has-border-right is-one-third is-centered "> <!-- Add custom class "has-border-right" here -->
-          <h2 class="title is-3 ">Groups</h2>
-          <ul id="group-list">
+<head>
+  <title>Group Chat Application</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/15181efa86.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.4/css/bulma.min.css" />
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+</head>
+<body>
+  <div class="container">
+    <div class="columns is-multiline">
+    <div style="background: white; margin-top: 3rem; border-radius: 10px;" 
+          class="column is-10 has-text-centered"><h1 class="title is-1" style="font-weight: 800;
+          letter-spacing: -2px;">ConnectChat</h1>
+    </div>
+    <div style="background: white; margin-top: 3rem; border-radius: 10px;" 
+          class="column has-text-centered"><button class="button is-danger" id="logout-button">Log out</button>
+    </div>
+  </div>
+    
+  
+      
+    <div class="chat">
+      <div class="columns">
+        <div class="column left groups">
+          <h2 style="font-weight: 800;" class="is-size-2 colored has-text-centered">Groups</h2>
+          <div class="has-text-centered">
+            <button style="font-weight: 800;
+            letter-spacing: 0px;" class="button has-text-centered" id="create-group-btn">Create a New Group</button>
+          </div>
+          <ul class="has-text-centered" id="group-list">
             <!-- Group list items will be dynamically added here -->
           </ul>
-          <button class="button is-primary" id="create-group-btn">Create Group</button>
         </div>
-        <div class="column has-border-right">
-          <h2 class="title is-3" id="group-name" >Select A Group</h2>
-          <ul id="message-list">
-            <!-- Messages will be dynamically added here -->
-          </ul>
-          <form id="message-form">
+        <div class="column right messages">
+          <h2 style="font-weight: 800;" class="is-size-2 colored has-text-centered">Select Group</h2>
+          <div class="column">
+            <ul id="message-list">
+              <!-- Messages will be dynamically added here -->
+            </ul>
+          </div>
+          <form class="form" id="message-form">
             <input type="text" id="message-group-id" hidden value="">
             <div class="field">
-              <input class="input" type="text" id="message-input" placeholder="Type your message...">
-            </div>
-            <div class="field is-grouped">
               <div class="control">
-                <button class="button is-primary" type="submit" id="send-button">Send</button>
-              </div>
-              <div class="control">
-                <input type="file" id="file-input" style="display: none;">
-                <button class="button is-light" id="upload-file">Select File</button>
+                <input id="message-input" class="input is-medium" name="name" type="text" placeholder="Type your message...">
               </div>
             </div>
+            <button class="button" type="submit" id="send-button">Send</button>
+            <input type="file" id="file-input" style="display: none;">
+            <button class="button" id="upload-file">Select File</button>
           </form>
         </div>
-        <div style="display: none" class="adminsection column is-one-quarter" id="adminsection">
-          <h2 class="title is-3" >Manage Users</h2>
-          <ul id="users-list"></ul>
-          <button class="button is-primary" type="button" id="add-userToGroup">Add User</button>
+        <div id="adminsection" style="display: none;" class="adminsection column right left2 has-text-centered">
+          <h2 style="font-weight: 800;" class="is-size-2 colored has-text-centered">Users</h2><br>
+          <div class="columns is-multiline" id="users-list">
+
+          </div>
+          <button class="button" type="button" id="add-userToGroup">Add User</button>
         </div>
       </div>
     </div>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  </div>
   
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/chat.js"></script>
-  </body>
-  
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+ 
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+
+</body>
 </html>
