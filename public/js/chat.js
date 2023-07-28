@@ -7,6 +7,49 @@ const messageGroupId = document.querySelector('#message-group-id');
 const adminSection = document.querySelector('#adminsection');
 const usersList = document.querySelector('#users-list');
 
+
+function showPopUpMessage(content, success) {
+  const modalMessage = document.querySelector('#modalMessage');
+  modalMessage.innerHTML = ' ';
+
+  const createAndAppendElement = (tagName, classNames = []) => {
+    const element = document.createElement(tagName);
+    element.classList.add(...classNames);
+    return element;
+  };
+
+  const modalbackground = createAndAppendElement('div', ['modal-background']);
+  const modalContent = createAndAppendElement('div', ['modal-content']);
+
+  const message = createAndAppendElement('article', ['message', success ? 'is-primary' : 'is-warning']);
+
+  const messageHeader = createAndAppendElement('div', ['message-header']);
+  const p = document.createElement('p');
+  p.textContent = success ? 'Success' : 'Error';
+  const button = createAndAppendElement('button', ['delete']);
+  button.setAttribute('id', 'modalCloseButton');
+  button.addEventListener('click', () => {
+    modalMessage.classList.remove('is-active');
+  });
+
+  messageHeader.appendChild(p);
+  messageHeader.appendChild(button);
+
+  const messageBody = createAndAppendElement('div', ['message-body']);
+  messageBody.innerText = content;
+
+  message.appendChild(messageHeader);
+  message.appendChild(messageBody);
+
+  modalContent.appendChild(message);
+
+  modalMessage.appendChild(modalbackground);
+  modalMessage.appendChild(modalContent);
+
+  modalMessage.classList.add('is-active');
+}
+
+
 // checking if the file is URL or not
 function isURL(str) {
   // Regular expression pattern for URL validation
@@ -46,83 +89,118 @@ function isURL(str) {
 
 
 // if the user is admin? features of the admin.
+
 async function adminFeatures(groupId) {
   usersList.innerHTML = '';
+
   try {
-    const Members = await axios.post('group-members', { groupId: groupId }, {
+    const response = await axios.post('group-members', { groupId }, {
       headers: { 'Content-Type': 'application/json' }
-    })
-    Members.data.forEach(member => {
+    });
+
+    const handleAdminClick = async (memberId) => {
+      try {
+        const response = await axios.post('makeGroupAdmin', { groupId, memberId }, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const messageText = response.data ? 'Member is now Admin' : 'Internal Server Error. Try Later.';
+        showPopUpMessage(messageText, response.data);
+      } catch (error) {
+        showPopUpMessage('Internal Server Error. Try Later.', false);
+      }
+    };
+
+    const handleRemoveClick = async (memberId) => {
+      try {
+        const result = await axios.post('removeUserFromGroup', { groupId, memberId }, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (result) {
+          alert('Member Removed');
+        } else {
+          alert('Internal Server Error');
+        }
+      } catch (error) {
+        alert('Internal Server Error');
+      }
+    };
+
+    response.data.forEach(member => {
       const userDiv = document.createElement('div');
       userDiv.classList.add('column', 'is-full', 'has-background-light');
+
       const userName = document.createElement('h1');
-      userName.classList.add('title', 'is-5')
+      userName.classList.add('title', 'is-5');
       userName.innerText = member.name;
 
       const makeAdminBtn = document.createElement('button');
       makeAdminBtn.textContent = 'Make Group Admin';
       makeAdminBtn.classList.add('button', 'is-small');
-      makeAdminBtn.addEventListener('click', () => {
-        axios.post('makeGroupAdmin', { groupId: groupId, memberId: member.id }, {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(result => { if(result){ alert('Member is now Admin') } else { alert('Internal Server Error') } });
-      })
+      makeAdminBtn.addEventListener('click', () => handleAdminClick(member.id));
 
       const removeUserBtn = document.createElement('button');
       removeUserBtn.textContent = 'Remove User';
       removeUserBtn.classList.add('button', 'is-small');
-      removeUserBtn.addEventListener('click', () => {
-        axios.post('removeUserFromGroup', { groupId: groupId, memberId: member.id }, {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(result => { if(result){ alert('Member Removed')} else { alert('Internal Server Error')} });
-      })
+      removeUserBtn.addEventListener('click', () => handleRemoveClick(member.id));
+
       userDiv.appendChild(userName);
       userDiv.appendChild(makeAdminBtn);
       userDiv.appendChild(removeUserBtn);
       usersList.appendChild(userDiv);
-    })
-  } catch(err) {
-    console.log(err);
+    });
+  } catch (error) {
+    console.log(error);
   }
 }
 
 // check if user is admin of the group or not.
 async function adminDisplay() {
   const groupId = document.querySelector('#message-group-id').value;
+
   try {
-    const isAdmin = await axios.post('isAdmin', { groupId: groupId, }, {
+    const { data: { isAdmin } } = await axios.post('isAdmin', { groupId }, {
       headers: { 'Content-Type': 'application/json' }
-    })
-    if(isAdmin.data.isAdmin) { 
-      adminSection.style.display = 'block';
+    });
+
+    adminSection.style.display = isAdmin ? 'block' : 'none';
+
+    if (isAdmin) {
       adminFeatures(groupId);
-    } else { adminSection.style.display = 'none' }
-  } catch(err) {
-    console.log(err);
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
-// add user to group
-document.querySelector('#add-userToGroup').addEventListener('click', (e) => {
-  e.preventDefault();
+
+// Add user to group
+document.querySelector('#add-userToGroup').addEventListener('click', (clickEvent) => {
+  clickEvent.preventDefault();
+
   const groupId = document.querySelector('#message-group-id').value;
-  if(!groupId) { return alert('Select a Group to Add User') }
+  if (!groupId) {
+    return showPopUpMessage('Select a Group to Add User', false);
+  }
+
   const newUserId = prompt('Enter the User ID');
-  if(!newUserId) { return alert('User ID cannot be null') }
-  axios.post('addusertogroup', { groupId: groupId, newUserId: newUserId }, {
-    headers: {
-      'Content-Type': 'application/json'
+  if (!newUserId) {
+    return showPopUpMessage('User ID cannot be null', false);
+  }
+
+  const addUserToGroup = async (groupId, newUserId) => {
+    try {
+      const result = await axios.post('addusertogroup', { groupId, newUserId }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      showPopUpMessage(result.data.message, true);
+    } catch (error) {
+      showPopUpMessage(error.response.data.message, false);
     }
-  })
-  .then(result => {
-    alert(result.data.message);
-  })
-  .catch(error => {
-    alert(error.response.data.message);
-  });
-})
+  };
+
+  addUserToGroup(groupId, newUserId);
+});
+
 
 // sending the message 
 const sendMessageForm = document.querySelector('#message-form')
@@ -202,6 +280,7 @@ function showGroupsOnScreen() {
             'Content-Type': 'application/json'
           }
         }).then(result => { 
+          document.querySelector('#groupNameDisplay').innerText = group.name;
           showMessagesOnScreen(result.data.messages, groupId)
           adminDisplay(); 
           socket.emit('join-group', document.querySelector('#message-group-id').value);

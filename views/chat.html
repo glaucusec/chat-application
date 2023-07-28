@@ -18,6 +18,9 @@
     <div style="background: white; margin-top: 3rem; border-radius: 10px;" 
           class="column has-text-centered"><button class="button is-danger" id="logout-button">Log out</button>
     </div>
+    <div class="modal" id="modalMessage">
+
+    </div>
   </div>
     
   
@@ -35,7 +38,7 @@
           </ul>
         </div>
         <div class="column right messages">
-          <h2 style="font-weight: 800;" class="is-size-2 colored has-text-centered">Select Group</h2>
+          <h2 style="font-weight: 800;" class="is-size-2 colored has-text-centered" id="groupNameDisplay">Select Group</h2>
           <div class="column">
             <ul id="message-list">
               <!-- Messages will be dynamically added here -->
