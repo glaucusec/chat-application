@@ -15,6 +15,7 @@ let CronJob = require('cron').CronJob;
 const sequelize = require('./util/database');
 
 // routes
+
 const routes = require('./routes/user');
 
 // models
@@ -44,6 +45,7 @@ app.use(cookieParser());
 
 app.use('/', routes(io));
 app.use('/', express.static(__dirname + '/public'))
+app.use('/', (req, res, next) => res.redirect('/login'));
 
 User.belongsToMany(Group, { through: GroupMember, foreignKey: 'memberId'} );
 Group.belongsToMany(User, { through: GroupMember, foreignKey: 'groupId' });

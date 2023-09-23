@@ -1,63 +1,81 @@
-const express = require('express');
+const express = require("express");
 
-const Message = require('../models/message');
+const Message = require("../models/message");
 
-const userController = require('../controllers/user');
-const chatController = require('../controllers/chat');
-const auth = require('../middleware/auth');
+const userController = require("../controllers/user");
+const chatController = require("../controllers/chat");
+const auth = require("../middleware/auth");
 
 module.exports = (io) => {
+  const router = express.Router();
 
-    const router = express.Router();
+  router.get("/signup", userController.getSignUpPage);
 
-    router.get('/signup', userController.getSignUpPage);
-    
-    router.post('/signup', userController.postSignUpForm);
-    
-    router.get('/login', userController.getLoginPage);
-    
-    router.post('/login', userController.postLoginData);
-    
-    router.get('/chat', auth.authenticate ,chatController.getChatApp);
-    
-    router.post('/messages', auth.authenticate, chatController.fetchAllMessages);
-    
-    router.post('/creategroup', auth.authenticate, chatController.createNewGroup)
-    
-    router.post('/groups', auth.authenticate, chatController.fetchGroups);
-    
-    router.post('/addmessage', auth.authenticate, chatController.createNewMessage);
-    
-    router.post('/addusertogroup', auth.authenticate, chatController.addUserToGroup);
-    
-    router.post('/group-members', auth.authenticate, chatController.fetchGroupMembers);
-    
-    router.post('/isAdmin', auth.authenticate, chatController.isAdminOrNot);
-    
-    router.post('/makeGroupAdmin', auth.authenticate, chatController.makeGroupAdmin)
-    
-    router.post('/removeUserFromGroup', auth.authenticate, chatController.removeUserFromGroup);
+  router.post("/signup", userController.postSignUpForm);
 
-    router.post('/image-upload', auth.authenticate, chatController.imageUpload);
+  router.get("/login", userController.getLoginPage);
 
-    io.on('connection', (socket) => {
+  router.post("/login", userController.postLoginData);
 
-        socket.on('join-group', (groupId) => {
-            socket.join(groupId)
-        })
-        socket.on('chat-message', async (msg, groupId) => {
-            io.to(groupId).emit('chat-message', msg);
-            if(msg) {
-                try {
-                    await Message.create({ message: msg, groupId: groupId })
-                } catch(err) {
-                    console.log('error @ socketEmitting', err);
-                }
-            }
-        })
-    })
+  router.get("/chat", auth.authenticate, chatController.getChatApp);
 
-    return router;
-}
+  router.post("/messages", auth.authenticate, chatController.fetchAllMessages);
 
+  router.post("/creategroup", auth.authenticate, chatController.createNewGroup);
 
+  router.post("/groups", auth.authenticate, chatController.fetchGroups);
+
+  router.post(
+    "/addmessage",
+    auth.authenticate,
+    chatController.createNewMessage
+  );
+
+  router.post(
+    "/addusertogroup",
+    auth.authenticate,
+    chatController.addUserToGroup
+  );
+
+  router.post(
+    "/group-members",
+    auth.authenticate,
+    chatController.fetchGroupMembers
+  );
+
+  router.post("/isAdmin", auth.authenticate, chatController.isAdminOrNot);
+
+  router.post(
+    "/makeGroupAdmin",
+    auth.authenticate,
+    chatController.makeGroupAdmin
+  );
+
+  router.post(
+    "/removeUserFromGroup",
+    auth.authenticate,
+    chatController.removeUserFromGroup
+  );
+
+  router.post("/image-upload", auth.authenticate, chatController.imageUpload);
+
+  router.post("/users", auth.authenticate, chatController.fetchAllUsers);
+
+  io.on("connection", (socket) => {
+    socket.on("join-group", (groupId) => {
+      socket.join(groupId);
+    });
+    socket.on("chat-message", async (msg, groupId) => {
+      io.to(groupId).emit("chat-message", msg);
+      if (msg) {
+        try {
+          await Message.create({ message: msg, groupId: groupId });
+        } catch (err) {
+          console.log("error @ socketEmitting", err);
+        }
+      }
+    });
+  });
+
+  return router;
+};
